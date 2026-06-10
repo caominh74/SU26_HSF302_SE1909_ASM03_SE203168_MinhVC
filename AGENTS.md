@@ -13,7 +13,7 @@ Quick checklist
 Big-picture architecture (what to know)
 --------------------------------------
 - Single-module Spring Boot application using annotation-based configuration. Entry point: `Su26Hsf302Se1909Asm03Se203168MinhVcApplication.java`.
-- Web layer is Spring Web MVC serving server-side templates (there is a `src/main/resources/templates` folder). No explicit controllers were found in the scanned files—expect controllers to be added under the same package when present.
+ - Web layer is Spring Web MVC serving server-side templates (there is a `src/main/resources/templates` folder). Controllers are present under `src/main/java/org/minhvc/springwebmvc/parkingmanagement/controllers/` (example: `ParkingSessionsController.java` serves `/CreateParkingSessions/index`). Add new controllers to the `controllers` package.
 - Persistence layer uses Spring Data JPA (`IParkingSessionRepository`, `IParkingSlotRepository`) and standard JPA entities under `entities/`. Repositories extend `JpaRepository<..., Integer>`.
 - Service layer exposes business methods via interfaces in `services/` (example: `IParkingSessionService` declares findAll/findById/findBySessionId patterns).
 - Entities use JPA annotations and Hibernate-specific annotations such as `@ColumnDefault` and `@Nationalized` — expect Hibernate dialect behavior and DB defaults when running against a relational DB.
@@ -50,15 +50,16 @@ Build / Run / Test workflows (concrete commands)
 Notes on configuration and integration points
 -------------------------------------------
 - `src/main/resources/application.properties` currently only contains `spring.application.name=SU26_HSF302_SE1909_ASM03_SE203168_MinhVc` — no datasource configured in the repo. Agents should:
+ - `src/main/resources/application.properties` contains application name plus an example SQL Server datasource and Thymeleaf settings (see spring.datasource.* and spring.thymeleaf.* in the repo). Agents should:
   - Look for environment variables or external config/profiles when running the app (check CI or developer docs).
-  - Expect to provide a JDBC URL, username, and password or use an in-memory DB when running locally for experiments.
+  - For local experiments prefer overriding the DB properties to use an in-memory H2 datasource or provide JDBC URL/credentials via environment or a profile. The project currently includes SQL Server settings (driver class `com.microsoft.sqlserver.jdbc.SQLServerDriver`) — ensure the corresponding JDBC driver is available when running against that DB.
 - Persistence: JPA + Hibernate. Repositories are Spring Data JPA interfaces — common pattern: create query methods on the interface or use JPQL/native queries if needed.
 - Templates: `src/main/resources/templates` exists — server-side views (likely Thymeleaf); when adding controllers, return view names not JSON unless REST controllers are explicitly used.
 
 Where to make common changes
 ----------------------------
-- Add controllers: `src/main/java/org/minhvc/springwebmvc/parkingmanagement/controller/` (create this package if missing)
-- Add service implementations: `src/main/java/org/minhvc/springwebmvc/parkingmanagement/services/impl/` and register via `@Service`
+ - Add controllers: `src/main/java/org/minhvc/springwebmvc/parkingmanagement/controllers/` (the project uses the plural `controllers` package; example: `ParkingSessionsController.java`).
+ - Add service implementations: register via `@Service`. Implementations may live in `src/main/java/org/minhvc/springwebmvc/parkingmanagement/services/` (example: `ParkingSessionsImpl.java`) or under a `services/impl/` subpackage.
 - Add custom repository queries by adding methods to interfaces in `repositories/` or by creating custom repository implementations.
 
 Searchable anchors (quick grep targets)
@@ -81,7 +82,7 @@ Files of interest (explicit)
 - `src/main/java/org/minhvc/springwebmvc/parkingmanagement/ServletInitializer.java`
 - `src/main/java/org/minhvc/springwebmvc/parkingmanagement/entities/` (all entity files)
 - `src/main/java/org/minhvc/springwebmvc/parkingmanagement/repositories/` (all repo interfaces)
-- `src/main/java/org/minhvc/springwebmvc/parkingmanagement/services/IParkingSessionService.java`
+ - `src/main/java/org/minhvc/springwebmvc/parkingmanagement/services/IParkingSessionsService.java`
 - `src/main/resources/application.properties`
 
 End of file
