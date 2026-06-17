@@ -3,68 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Parking Session</title>
-    <link rel="stylesheet" th:href="@{/bootstrap-4.5.3-dist/css/bootstrap.min.css}"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-4">
-    <h1>Edit Parking Session</h1>
-    <form th:action="@{/CreateParkingSessions/save}" th:object="${parkingSession}" method="post">
+<div class="container mt-5">
+    <h1 class="mb-4">Edit Parking Session</h1>
+
+    <form th:action="@{/CreateParkingSessions/saveUpdate}" th:object="${parkingSession}" method="post">
         <input type="hidden" th:field="*{id}"/>
-        <div class="mb-3">
-            <label for="vehicleID" class="form-label">Vehicle</label>
-            <select class="form-select" id="vehicleID" th:field="*{vehicleID}" required>
-                <option value="">Select Vehicle</option>
-                <option th:each="v : ${vehicles}" th:value="${v.id}" th:text="${v.licensePlate}"></option>
-            </select>
+
+        <!-- Display validation errors if any -->
+        <div th:if="${#fields.hasAnyErrors()}" class="alert alert-danger">
+            <ul>
+                <li th:each="err : ${#fields.allErrors()}" th:text="${err}"></li>
+            </ul>
         </div>
+
         <div class="mb-3">
-            <label for="slotID" class="form-label">Parking Slot</label>
-            <select class="form-select" id="slotID" th:field="*{slotID}" required>
-                <option value="">Select Slot</option>
-                <option th:each="s : ${slots}" th:value="${s.id}" th:text="${s.slotCode}"></option>
+            <label for="vehicleID" class="form-label">Vehicle:</label>
+            <select id="vehicleID" class="form-select" th:field="*{vehicleID.id}" required>
+                <option value="">-- Select a Vehicle --</option>
+                <option th:each="v : ${vehicles}"
+                        th:value="${v.id}"
+                        th:text="${v.licensePlate}"></option>
             </select>
+            <div th:if="${#fields.hasErrors('vehicleID')}" th:errors="*{vehicleID}" class="text-danger mt-1"></div>
         </div>
+
         <div class="mb-3">
-            <label for="entryTime" class="form-label">Entry Time</label>
+            <label for="slotID" class="form-label">Parking Slot:</label>
+            <select id="slotID" class="form-select" th:field="*{slotID.id}" required>
+                <option value="">-- Select a Parking Slot --</option>
+                <option th:each="s : ${slots}"
+                        th:value="${s.id}"
+                        th:text="${s.slotCode} + ' - ' + ${s.zoneID != null ? s.zoneID.zoneName : ''}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('slotID')}" th:errors="*{slotID}" class="text-danger mt-1"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="entryTime" class="form-label">Entry Time:</label>
             <input type="datetime-local" class="form-control" id="entryTime" th:field="*{entryTime}" required/>
+            <div th:if="${#fields.hasErrors('entryTime')}" th:errors="*{entryTime}" class="text-danger mt-1"></div>
         </div>
+
         <div class="mb-3">
-            <label for="exitTime" class="form-label">Exit Time</label>
+            <label for="exitTime" class="form-label">Exit Time:</label>
             <input type="datetime-local" class="form-control" id="exitTime" th:field="*{exitTime}"/>
+            <div th:if="${#fields.hasErrors('exitTime')}" th:errors="*{exitTime}" class="text-danger mt-1"></div>
         </div>
+
         <div class="mb-3">
-            <label for="entryGate" class="form-label">Entry Gate</label>
+            <label for="entryGate" class="form-label">Entry Gate:</label>
             <input type="text" class="form-control" id="entryGate" th:field="*{entryGate}"/>
+            <div th:if="${#fields.hasErrors('entryGate')}" th:errors="*{entryGate}" class="text-danger mt-1"></div>
         </div>
+
         <div class="mb-3">
-            <label for="exitGate" class="form-label">Exit Gate</label>
+            <label for="exitGate" class="form-label">Exit Gate:</label>
             <input type="text" class="form-control" id="exitGate" th:field="*{exitGate}"/>
+            <div th:if="${#fields.hasErrors('exitGate')}" th:errors="*{exitGate}" class="text-danger mt-1"></div>
         </div>
+
         <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
+            <label for="status" class="form-label">Status:</label>
             <select class="form-select" id="status" th:field="*{status}" required>
-                <option value="Active">Active</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
+                <option value="PARKING">PARKING</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="LOST_TICKET">LOST TICKET</option>
+                <option value="UNPAID">UNPAID</option>
+                <option value="VIOLATION">VIOLATION</option>
             </select>
+            <div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="text-danger mt-1"></div>
         </div>
+
         <div class="mb-3">
-            <label for="estimatedFee" class="form-label">Estimated Fee</label>
+            <label for="estimatedFee" class="form-label">Estimated Fee:</label>
             <input type="number" step="0.01" class="form-control" id="estimatedFee" th:field="*{estimatedFee}"/>
+            <div th:if="${#fields.hasErrors('estimatedFee')}" th:errors="*{estimatedFee}" class="text-danger mt-1"></div>
         </div>
+
         <div class="mb-3">
-            <label for="finalFee" class="form-label">Final Fee</label>
+            <label for="finalFee" class="form-label">Final Fee:</label>
             <input type="number" step="0.01" class="form-control" id="finalFee" th:field="*{finalFee}"/>
+            <div th:if="${#fields.hasErrors('finalFee')}" th:errors="*{finalFee}" class="text-danger mt-1"></div>
         </div>
+
         <div class="mb-3">
-            <label for="createdBy" class="form-label">Created By</label>
-            <select class="form-select" id="createdBy" th:field="*{createdBy}">
-                <option value="">Select User</option>
-                <option th:each="u : ${users}" th:value="${u.id}" th:text="${u.fullName}"></option>
+            <label for="createdBy" class="form-label">Created By:</label>
+            <select class="form-select" id="createdBy" th:field="*{createdBy.id}">
+                <option value="">-- Select a User --</option>
+                <option th:each="u : ${users}"
+                        th:value="${u.id}"
+                        th:text="${u.fullName}"></option>
             </select>
+            <div th:if="${#fields.hasErrors('createdBy')}" th:errors="*{createdBy}" class="text-danger mt-1"></div>
         </div>
-        <button type="submit" class="btn btn-primary">Update</button>
-        <a th:href="@{/CreateParkingSessions/index}" class="btn btn-secondary">Cancel</a>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a th:href="@{/CreateParkingSessions/index}" class="btn btn-secondary">Back to list</a>
+        </div>
     </form>
 </div>
 </body>

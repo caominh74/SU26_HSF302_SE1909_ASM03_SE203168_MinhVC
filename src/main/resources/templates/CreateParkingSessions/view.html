@@ -2,48 +2,103 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>View Parking Session</title>
-    <link rel="stylesheet" th:href="@{/bootstrap-4.5.3-dist/css/bootstrap.min.css}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>View Parking Session Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-<div class="container mt-4">
-    <h1>Parking Session Details</h1>
-    <dl class="row">
-        <dt class="col-sm-3">Session ID</dt>
-        <dd class="col-sm-9" th:text="${parkingSession.id}"></dd>
 
-        <dt class="col-sm-3">Vehicle</dt>
-        <dd class="col-sm-9" th:text="${parkingSession.vehicleID.licensePlate}"></dd>
+<div class="container mt-5">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <h2 class="text-secondary fw-bold m-0">Parking Session Details</h2>
+            <small class="text-muted">View details of a specific parking session</small>
+        </div>
+    </div>
 
-        <dt class="col-sm-3">Slot</dt>
-        <dd class="col-sm-9" th:text="${parkingSession.slotID.slotCode}"></dd>
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <!-- Null check wrapper around elements using parkingSession to prevent rendering crash -->
+                <div th:if="${parkingSession != null}">
+                    <div class="card-header bg-dark text-white">
+                        <h4 class="mb-0">Session ID: <span th:text="${parkingSession.id}"></span></h4>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered mb-0">
+                            <tbody>
+                            <tr>
+                                <th style="width: 200px;">Session ID</th>
+                                <td th:text="${parkingSession.id}"></td>
+                            </tr>
+                            <tr>
+                                <th>Vehicle License Plate</th>
+                                <td th:text="${parkingSession.vehicleID != null ? parkingSession.vehicleID.licensePlate : ''}"></td>
+                            </tr>
+                            <tr>
+                                <th>Parking Slot Code</th>
+                                <td th:text="${parkingSession.slotID != null ? parkingSession.slotID.slotCode : ''}"></td>
+                            </tr>
+                            <tr>
+                                <th>Entry Time</th>
+                                <td th:text="${parkingSession.entryTime}"></td>
+                            </tr>
+                            <tr>
+                                <th>Exit Time</th>
+                                <td th:text="${parkingSession.exitTime}"></td>
+                            </tr>
+                            <tr>
+                                <th>Entry Gate</th>
+                                <td th:text="${parkingSession.entryGate}"></td>
+                            </tr>
+                            <tr>
+                                <th>Exit Gate</th>
+                                <td th:text="${parkingSession.exitGate}"></td>
+                            </tr>
+                            <tr>
+                                <th>Status</th>
+                                <td>
+                                    <span th:text="${parkingSession.status}"
+                                          th:classappend="${parkingSession.status == 'COMPLETED'} ? 'bg-success' : 'bg-warning'"
+                                          class="badge rounded-pill px-3 py-2 text-dark">
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Estimated Fee</th>
+                                <td th:text="${parkingSession.estimatedFee != null ? '$' + parkingSession.estimatedFee : 'N/A'}"></td>
+                            </tr>
+                            <tr>
+                                <th>Final Fee</th>
+                                <td th:text="${parkingSession.finalFee != null ? '$' + parkingSession.finalFee : 'N/A'}"></td>
+                            </tr>
+                            <tr>
+                                <th>Created By</th>
+                                <td th:text="${parkingSession.createdBy != null ? parkingSession.createdBy.fullName : 'N/A'}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a th:href="@{'/CreateParkingSessions/edit/' + ${parkingSession.id}}" class="btn btn-warning">Edit</a>
+                        <a th:href="@{/CreateParkingSessions/index}" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </div>
 
-        <dt class="col-sm-3">Entry Time</dt>
-        <dd class="col-sm-9" th:text="${parkingSession.entryTime}"></dd>
-
-        <dt class="col-sm-3">Exit Time</dt>
-        <dd class="col-sm-9" th:text="${parkingSession.exitTime}"></dd>
-
-        <dt class="col-sm-3">Entry Gate</dt>
-        <dd class="col-sm-9" th:text="${parkingSession.entryGate}"></dd>
-
-        <dt class="col-sm-3">Exit Gate</dt>
-        <dd class="col-sm-9" th:text="${parkingSession.exitGate}"></dd>
-
-        <dt class="col-sm-3">Status</dt>
-        <dd class="col-sm-9" th:text="${parkingSession.status}"></dd>
-
-        <dt class="col-sm-3">Estimated Fee</dt>
-        <dd class="col-sm-9" th:text="${parkingSession.estimatedFee}"></dd>
-
-        <dt class="col-sm-3">Final Fee</dt>
-        <dd class="col-sm-9" th:text="${parkingSession.finalFee}"></dd>
-
-        <dt class="col-sm-3">Created By</dt>
-        <dd class="col-sm-9" th:text="${parkingSession.createdBy != null} ? ${parkingSession.createdBy.fullName} : 'N/A'"></dd>
-    </dl>
-    <a th:href="@{/CreateParkingSessions/edit/{id}(id=${parkingSession.id})}" class="btn btn-warning">Edit</a>
-    <a th:href="@{/CreateParkingSessions/index}" class="btn btn-secondary">Back to List</a>
+                <!-- Safe warning fallback if session is null -->
+                <div th:if="${parkingSession == null}" class="card-body">
+                    <div class="alert alert-warning mb-0">
+                        Parking Session not found.
+                    </div>
+                    <div class="mt-3 text-center">
+                        <a th:href="@{/CreateParkingSessions/index}" class="btn btn-secondary">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

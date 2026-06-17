@@ -40,7 +40,7 @@ public class ParkingSessionsImpl implements IParkingSessionsService {
 	@Override
 	public List<ParkingSessions> findByVehicleId(Integer vehicleId) {
 		try {
-			return parkingSessionRepository.findByVehicleId(vehicleId);
+			return parkingSessionRepository.findByVehicleID_Id(vehicleId);
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to retrieve parking sessions by vehicle id", e);
 		}
@@ -49,7 +49,7 @@ public class ParkingSessionsImpl implements IParkingSessionsService {
 	@Override
 	public List<ParkingSessions> findBySlotId(Integer slotId) {
 		try {
-			return parkingSessionRepository.findBySlotId(slotId);
+			return parkingSessionRepository.findBySlotID_Id(slotId);
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to retrieve parking sessions by slot id", e);
 		}

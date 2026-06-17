@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface IParkingSessionsRepository extends JpaRepository<ParkingSessions, Integer> {
 	List<ParkingSessions> findByStatus(String status);
-	List<ParkingSessions> findByVehicleId(Integer vehicleId);
-	List<ParkingSessions> findBySlotId(Integer slotId);
+	List<ParkingSessions> findByVehicleID_Id(Integer vehicleId);
+	List<ParkingSessions> findBySlotID_Id(Integer slotId);
 }
