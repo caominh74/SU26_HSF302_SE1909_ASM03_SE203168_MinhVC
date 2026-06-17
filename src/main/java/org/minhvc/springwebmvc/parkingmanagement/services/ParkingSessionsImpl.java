@@ -39,17 +39,29 @@ public class ParkingSessionsImpl implements IParkingSessionsService {
 
 	@Override
 	public List<ParkingSessions> findByVehicleId(Integer vehicleId) {
-		return List.of();
+		try {
+			return parkingSessionRepository.findByVehicleId(vehicleId);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to retrieve parking sessions by vehicle id", e);
+		}
 	}
 
 	@Override
 	public List<ParkingSessions> findBySlotId(Integer slotId) {
-		return List.of();
+		try {
+			return parkingSessionRepository.findBySlotId(slotId);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to retrieve parking sessions by slot id", e);
+		}
 	}
 
 	@Override
 	public List<ParkingSessions> findByStatus(String status) {
-		return List.of();
+		try {
+			return parkingSessionRepository.findByStatus(status);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to retrieve parking sessions by status", e);
+		}
 	}
 
 	@Override
@@ -65,6 +77,8 @@ public class ParkingSessionsImpl implements IParkingSessionsService {
 					existItem.setSlotID(parkingSessions.getSlotID());
 					existItem.setEntryTime(parkingSessions.getEntryTime());
 					existItem.setExitTime(parkingSessions.getExitTime());
+					existItem.setEntryGate(parkingSessions.getEntryGate());
+					existItem.setExitGate(parkingSessions.getExitGate());
 					existItem.setStatus(parkingSessions.getStatus());
 					existItem.setEstimatedFee(parkingSessions.getEstimatedFee());
 					existItem.setFinalFee(parkingSessions.getFinalFee());

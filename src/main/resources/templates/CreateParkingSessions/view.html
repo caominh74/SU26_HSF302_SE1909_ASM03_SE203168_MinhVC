@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View Parking Session</title>
+    <link rel="stylesheet" th:href="@{/bootstrap-4.5.3-dist/css/bootstrap.min.css}"/>
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Parking Session Details</h1>
+    <dl class="row">
+        <dt class="col-sm-3">Session ID</dt>
+        <dd class="col-sm-9" th:text="${parkingSession.id}"></dd>
+
+        <dt class="col-sm-3">Vehicle</dt>
+        <dd class="col-sm-9" th:text="${parkingSession.vehicleID.licensePlate}"></dd>
+
+        <dt class="col-sm-3">Slot</dt>
+        <dd class="col-sm-9" th:text="${parkingSession.slotID.slotCode}"></dd>
+
+        <dt class="col-sm-3">Entry Time</dt>
+        <dd class="col-sm-9" th:text="${parkingSession.entryTime}"></dd>
+
+        <dt class="col-sm-3">Exit Time</dt>
+        <dd class="col-sm-9" th:text="${parkingSession.exitTime}"></dd>
+
+        <dt class="col-sm-3">Entry Gate</dt>
+        <dd class="col-sm-9" th:text="${parkingSession.entryGate}"></dd>
+
+        <dt class="col-sm-3">Exit Gate</dt>
+        <dd class="col-sm-9" th:text="${parkingSession.exitGate}"></dd>
+
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9" th:text="${parkingSession.status}"></dd>
+
+        <dt class="col-sm-3">Estimated Fee</dt>
+        <dd class="col-sm-9" th:text="${parkingSession.estimatedFee}"></dd>
+
+        <dt class="col-sm-3">Final Fee</dt>
+        <dd class="col-sm-9" th:text="${parkingSession.finalFee}"></dd>
+
+        <dt class="col-sm-3">Created By</dt>
+        <dd class="col-sm-9" th:text="${parkingSession.createdBy != null} ? ${parkingSession.createdBy.fullName} : 'N/A'"></dd>
+    </dl>
+    <a th:href="@{/CreateParkingSessions/edit/{id}(id=${parkingSession.id})}" class="btn btn-warning">Edit</a>
+    <a th:href="@{/CreateParkingSessions/index}" class="btn btn-secondary">Back to List</a>
+</div>
+</body>
+</html>
