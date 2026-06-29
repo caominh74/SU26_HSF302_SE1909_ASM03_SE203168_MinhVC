@@ -3,18 +3,13 @@ package org.minhvc.springwebmvc.parkingmanagement.services;
 import org.minhvc.springwebmvc.parkingmanagement.entities.ParkingSessions;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IParkingSessionsService {
-	// Query methods
 	List<ParkingSessions> findAll();
-	ParkingSessions findById(Integer id);
-	List<ParkingSessions> findBySessionId(String sessionId);
-	List<ParkingSessions> findByVehicleId(Integer vehicleId);
-	List<ParkingSessions> findBySlotId(Integer slotId);
-	List<ParkingSessions> findByStatus(String status);
+	Optional<ParkingSessions> findById(Integer id);
 	List<ParkingSessions> searchByKeyword(String keyword);
 
-	//Mutation methods
-	void save(ParkingSessions parkingSessions);
+	void save(ParkingSessions parkingSession);
 	void delete(Integer id);
 }

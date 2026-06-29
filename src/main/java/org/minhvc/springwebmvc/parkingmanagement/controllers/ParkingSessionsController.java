@@ -57,7 +57,7 @@ public class ParkingSessionsController {
 	@RequestMapping(value = "/ParkingSessions/detail/{id}", method = RequestMethod.GET)
 	public ModelAndView detail(@PathVariable("id") Integer id) {
 		ModelAndView modelAndView = new ModelAndView("ParkingSessions/detail");
-		modelAndView.addObject("parkingSession", parkingSessionsService.findById(id));
+		modelAndView.addObject("parkingSession", parkingSessionsService.findById(id).orElse(null));
 		return modelAndView;
 	}
 
@@ -77,7 +77,7 @@ public class ParkingSessionsController {
 
 	@RequestMapping(value = "/ParkingSessions/update/{id}", method = RequestMethod.GET)
 	public ModelAndView updateForm(@PathVariable("id") Integer id) {
-		ParkingSessions parkingSession = parkingSessionsService.findById(id);
+		ParkingSessions parkingSession = parkingSessionsService.findById(id).orElse(null);
 		if (parkingSession == null) {
 			return new ModelAndView("redirect:/ParkingSessions/index");
 		}
@@ -138,15 +138,15 @@ public class ParkingSessionsController {
 
 	private void resolveRelationships(ParkingSessions parkingSession) {
 		if (parkingSession.getSlotID() != null && parkingSession.getSlotID().getId() != null) {
-			ParkingSlot parkingSlot = parkingSlotService.findById(parkingSession.getSlotID().getId());
+			ParkingSlot parkingSlot = parkingSlotService.findById(parkingSession.getSlotID().getId()).orElse(null);
 			parkingSession.setSlotID(parkingSlot);
 		}
 		if (parkingSession.getVehicleID() != null && parkingSession.getVehicleID().getId() != null) {
-			Vehicle vehicle = vehicleService.findById(parkingSession.getVehicleID().getId());
+			Vehicle vehicle = vehicleService.findById(parkingSession.getVehicleID().getId()).orElse(null);
 			parkingSession.setVehicleID(vehicle);
 		}
 		if (parkingSession.getCreatedBy() != null && parkingSession.getCreatedBy().getId() != null) {
-			User user = userService.findById(parkingSession.getCreatedBy().getId());
+			User user = userService.findById(parkingSession.getCreatedBy().getId()).orElse(null);
 			parkingSession.setCreatedBy(user);
 		} else {
 			parkingSession.setCreatedBy(null);

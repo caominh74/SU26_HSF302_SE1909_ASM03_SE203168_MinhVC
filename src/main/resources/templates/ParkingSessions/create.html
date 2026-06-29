@@ -9,7 +9,7 @@
 <div class="container mt-5">
     <h1 class="mb-4">Create Parking Session</h1>
 
-    <form th:action="@{/CreateParkingSessions/saveCreate}" th:object="${parkingSession}" method="post">
+    <form th:action="@{/ParkingSessions/saveCreate}" th:object="${parkingSession}" method="post">
 
         <!-- Display validation errors if any -->
         <div th:if="${#fields.hasAnyErrors()}" class="alert alert-danger">
@@ -33,9 +33,9 @@
             <label for="slotID" class="form-label">Parking Slot:</label>
             <select id="slotID" class="form-select" th:field="*{slotID.id}" required>
                 <option value="">-- Select a Parking Slot --</option>
-                <option th:each="s : ${slots}"
+                <option th:each="s : ${parkingSlots}"
                         th:value="${s.id}"
-                        th:text="${s.slotCode} + ' - ' + ${s.zoneID != null ? s.zoneID.zoneName : ''}"></option>
+                        th:text="${s.slotCode + ' - ' + (s.zoneID != null ? s.zoneID.zoneName : '')}"></option>
             </select>
             <div th:if="${#fields.hasErrors('slotID')}" th:errors="*{slotID}" class="text-danger mt-1"></div>
         </div>
@@ -83,7 +83,7 @@
 
         <div class="mt-4">
             <button type="submit" class="btn btn-success">Create</button>
-            <a th:href="@{/CreateParkingSessions/index}" class="btn btn-secondary">Back to list</a>
+            <a th:href="@{/ParkingSessions/index}" class="btn btn-secondary">Back to list</a>
         </div>
     </form>
 </div>
