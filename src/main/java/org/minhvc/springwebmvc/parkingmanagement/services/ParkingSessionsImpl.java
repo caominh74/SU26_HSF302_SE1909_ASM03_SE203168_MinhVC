@@ -65,6 +65,14 @@ public class ParkingSessionsImpl implements IParkingSessionsService {
 	}
 
 	@Override
+	public List<ParkingSessions> searchByKeyword(String keyword) {
+		if (keyword == null || keyword.isBlank()) {
+			return parkingSessionRepository.findAll();
+		}
+		return parkingSessionRepository.searchByKeyword(keyword.trim());
+	}
+
+	@Override
 	public void save(ParkingSessions parkingSessions) {
 		try {
 			if (parkingSessions.getId() == null) {
@@ -82,6 +90,7 @@ public class ParkingSessionsImpl implements IParkingSessionsService {
 					existItem.setStatus(parkingSessions.getStatus());
 					existItem.setEstimatedFee(parkingSessions.getEstimatedFee());
 					existItem.setFinalFee(parkingSessions.getFinalFee());
+					existItem.setCreatedBy(parkingSessions.getCreatedBy());
 					parkingSessionRepository.save(existItem);
 				}
 			}

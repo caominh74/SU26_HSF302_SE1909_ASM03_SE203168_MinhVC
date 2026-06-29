@@ -12,6 +12,7 @@ public interface IParkingSessionsService {
 	List<ParkingSessions> findByVehicleId(Integer vehicleId);
 	List<ParkingSessions> findBySlotId(Integer slotId);
 	List<ParkingSessions> findByStatus(String status);
+	List<ParkingSessions> searchByKeyword(String keyword);
 
 	//Mutation methods
 	void save(ParkingSessions parkingSessions);

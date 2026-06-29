@@ -5,8 +5,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Nationalized;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -31,10 +32,12 @@ public class Reservation {
 	private ParkingSlot slotID;
 
 	@Column(name = "ReservationStart", nullable = false)
-	private Instant reservationStart;
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+	private LocalDateTime reservationStart;
 
 	@Column(name = "ReservationEnd", nullable = false)
-	private Instant reservationEnd;
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+	private LocalDateTime reservationEnd;
 
 	@Nationalized
 	@Column(name = "Status", length = 20)
@@ -42,7 +45,20 @@ public class Reservation {
 
 	@ColumnDefault("getdate()")
 	@Column(name = "CreatedAt")
-	private Instant createdAt;
+	@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
+	private LocalDateTime createdAt;
 
-
+	@Override
+	public String toString() {
+		return "Reservation{" +
+				"id=" + id +
+				", userID=" + userID +
+				", vehicleTypeID=" + vehicleTypeID +
+				", slotID=" + slotID +
+				", reservationStart=" + reservationStart +
+				", reservationEnd=" + reservationEnd +
+				", status='" + status + '\'' +
+				", createdAt=" + createdAt +
+				'}';
+	}
 }

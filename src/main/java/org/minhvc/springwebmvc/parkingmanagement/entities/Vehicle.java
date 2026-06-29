@@ -27,5 +27,9 @@ public class Vehicle {
 	@Column(name = "OwnerPhone", length = 20)
 	private String ownerPhone;
 
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "VehicleTypeID", nullable = false)
+	private VehicleType vehicleTypeID;
+
 
 }

@@ -20,13 +20,13 @@ public class ParkingSlot {
 	@JoinColumn(name = "ZoneID", nullable = false)
 	private Zone zoneID;
 
-	@Nationalized
-	@Column(name = "SlotCode", nullable = false, length = 20)
-	private String slotCode;
-
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "VehicleTypeID", nullable = false)
 	private VehicleType vehicleTypeID;
+
+	@Nationalized
+	@Column(name = "SlotCode", nullable = false, length = 20)
+	private String slotCode;
 
 	@Nationalized
 	@Column(name = "Status", nullable = false, length = 20)
