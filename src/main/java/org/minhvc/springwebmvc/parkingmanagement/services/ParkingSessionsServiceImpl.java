@@ -79,7 +79,7 @@ public class ParkingSessionsServiceImpl implements IParkingSessionsService {
 			existingSession.setStatus(parkingSession.getStatus());
 			existingSession.setEstimatedFee(parkingSession.getEstimatedFee());
 			existingSession.setFinalFee(parkingSession.getFinalFee());
-			existingSession.setCreatedBy(parkingSession.getCreatedBy());
+			existingSession.setCustomerUser(parkingSession.getCustomerUser());
 			parkingSessionsRepository.save(existingSession);
 		} catch (Exception exception) {
 			throw new RuntimeException("Failed to save parking session", exception);

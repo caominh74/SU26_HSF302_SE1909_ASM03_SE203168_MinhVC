@@ -1,6 +1,8 @@
 package org.minhvc.springwebmvc.parkingmanagement.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -47,12 +49,16 @@ public class ParkingSessions {
 	private String status;
 
 	@Column(name = "EstimatedFee", precision = 10, scale = 2)
+	@DecimalMin(value = "0.00", message = "Estimated fee cannot be negative")
+	@Digits(integer = 8, fraction = 2, message = "Estimated fee must be at most 99,999,999.99 with no more than 2 decimal places")
 	private BigDecimal estimatedFee;
 
 	@Column(name = "FinalFee", precision = 10, scale = 2)
+	@DecimalMin(value = "0.00", message = "Final fee cannot be negative")
+	@Digits(integer = 8, fraction = 2, message = "Final fee must be at most 99,999,999.99 with no more than 2 decimal places")
 	private BigDecimal finalFee;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CreatedBy")
-	private User createdBy;
+	private User customerUser;
 }

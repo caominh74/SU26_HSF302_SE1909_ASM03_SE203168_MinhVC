@@ -73,8 +73,8 @@
                                 <td th:text="${parkingSession.finalFee != null ? '$' + parkingSession.finalFee : 'N/A'}"></td>
                             </tr>
                             <tr>
-                                <th>Created By</th>
-                                <td th:text="${parkingSession.createdBy != null ? parkingSession.createdBy.fullName : 'N/A'}"></td>
+                                <th>Customer Account</th>
+                                <td th:text="${parkingSession.customerUser != null ? parkingSession.customerUser.fullName : 'Guest'}"></td>
                             </tr>
                             </tbody>
                         </table>

@@ -23,6 +23,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ParkingSessionsController {
@@ -75,6 +76,7 @@ public class ParkingSessionsController {
 		vehicle.setVehicleTypeID(new VehicleType());
 		parkingSession.setVehicleID(vehicle);
 		parkingSession.setSlotID(new ParkingSlot());
+		parkingSession.setCustomerUser(new User());
 
 		ModelAndView modelAndView = new ModelAndView("ParkingSessions/create");
 		addFormDropdowns(modelAndView);
@@ -140,7 +142,9 @@ public class ParkingSessionsController {
 	private void addFormDropdowns(ModelAndView modelAndView) {
 		modelAndView.addObject("parkingSlots", parkingSlotService.findAll());
 		modelAndView.addObject("vehicleTypes", vehicleTypeService.findAll());
-		modelAndView.addObject("users", userService.findAll());
+		modelAndView.addObject("users", userService.findAll().stream()
+				.filter(this::isCustomerUser)
+				.collect(Collectors.toList()));
 	}
 
 	private void resolveRelationships(ParkingSessions parkingSession) {
@@ -173,11 +177,18 @@ public class ParkingSessionsController {
 			}
 			parkingSession.setVehicleID(vehicle);
 		}
-		if (parkingSession.getCreatedBy() != null && parkingSession.getCreatedBy().getId() != null) {
-			User user = userService.findById(parkingSession.getCreatedBy().getId()).orElse(null);
-			parkingSession.setCreatedBy(user);
+		if (parkingSession.getCustomerUser() != null && parkingSession.getCustomerUser().getId() != null) {
+			User customer = userService.findById(parkingSession.getCustomerUser().getId()).orElse(null);
+			parkingSession.setCustomerUser(customer);
 		} else {
-			parkingSession.setCreatedBy(null);
+			parkingSession.setCustomerUser(null);
 		}
+	}
+
+	private boolean isCustomerUser(User user) {
+		return user != null
+				&& user.getRoleID() != null
+				&& user.getRoleID().getRoleName() != null
+				&& "CUSTOMER".equalsIgnoreCase(user.getRoleID().getRoleName());
 	}
 }

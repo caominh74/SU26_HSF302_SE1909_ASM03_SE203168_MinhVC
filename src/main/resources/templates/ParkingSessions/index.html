@@ -31,18 +31,18 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="session : ${parkingSessions}">
-            <td th:text="${session.id}"></td>
-            <td th:text="${session.vehicleID != null ? session.vehicleID.licensePlate : ''}"></td>
-            <td th:text="${session.slotID != null ? session.slotID.slotCode : ''}"></td>
-            <td th:text="${session.entryTime}"></td>
-            <td th:text="${session.exitTime}"></td>
-            <td th:text="${session.status}"></td>
-            <td th:text="${session.estimatedFee}"></td>
+        <tr th:each="parkingSession : ${parkingSessions}">
+            <td th:text="${parkingSession.id}"></td>
+            <td th:text="${parkingSession.vehicleID != null ? parkingSession.vehicleID.licensePlate : ''}"></td>
+            <td th:text="${parkingSession.slotID != null ? parkingSession.slotID.slotCode : ''}"></td>
+            <td th:text="${parkingSession.entryTime}"></td>
+            <td th:text="${parkingSession.exitTime}"></td>
+            <td th:text="${parkingSession.status}"></td>
+            <td th:text="${parkingSession.estimatedFee}"></td>
             <td>
-                <a th:href="@{'/ParkingSessions/detail/' + ${session.id}}" class="btn btn-info btn-sm">View</a>
-                <a th:href="@{'/ParkingSessions/update/' + ${session.id}}" class="btn btn-warning btn-sm">Edit</a>
-                <a th:href="@{'/ParkingSessions/delete/' + ${session.id}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
+                <a th:href="@{'/ParkingSessions/detail/' + ${parkingSession.id}}" class="btn btn-info btn-sm">View</a>
+                <a th:href="@{'/ParkingSessions/update/' + ${parkingSession.id}}" class="btn btn-warning btn-sm">Edit</a>
+                <a th:href="@{'/ParkingSessions/delete/' + ${parkingSession.id}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</a>
             </td>
         </tr>
         </tbody>
