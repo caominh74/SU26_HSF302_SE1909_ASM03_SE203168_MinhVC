@@ -5,7 +5,7 @@ import org.minhvc.springwebmvc.parkingmanagement.repositories.IParkingSessionsRe
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,7 +54,7 @@ public class ParkingSessionsServiceImpl implements IParkingSessionsService {
 		try {
 			if (parkingSession.getId() == null) {
 				if (parkingSession.getEntryTime() == null) {
-					parkingSession.setEntryTime(Instant.now());
+					parkingSession.setEntryTime(LocalDateTime.now());
 				}
 				if (parkingSession.getStatus() == null || parkingSession.getStatus().isBlank()) {
 					parkingSession.setStatus("PARKING");

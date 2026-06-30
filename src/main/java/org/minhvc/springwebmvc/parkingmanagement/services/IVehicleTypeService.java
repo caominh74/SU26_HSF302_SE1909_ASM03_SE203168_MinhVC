@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface IVehicleTypeService {
 	List<VehicleType> findAll();
 	Optional<VehicleType> findById(Integer id);
+	Optional<VehicleType> findByTypeName(String typeName);
 	void save(VehicleType vehicleType);
 	void delete(Integer id);
 }

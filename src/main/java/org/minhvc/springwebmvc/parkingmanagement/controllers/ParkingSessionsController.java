@@ -5,10 +5,12 @@ import org.minhvc.springwebmvc.parkingmanagement.entities.ParkingSessions;
 import org.minhvc.springwebmvc.parkingmanagement.entities.ParkingSlot;
 import org.minhvc.springwebmvc.parkingmanagement.entities.User;
 import org.minhvc.springwebmvc.parkingmanagement.entities.Vehicle;
+import org.minhvc.springwebmvc.parkingmanagement.entities.VehicleType;
 import org.minhvc.springwebmvc.parkingmanagement.services.IParkingSessionsService;
 import org.minhvc.springwebmvc.parkingmanagement.services.IParkingSlotService;
 import org.minhvc.springwebmvc.parkingmanagement.services.IUserService;
 import org.minhvc.springwebmvc.parkingmanagement.services.IVehicleService;
+import org.minhvc.springwebmvc.parkingmanagement.services.IVehicleTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -33,6 +35,9 @@ public class ParkingSessionsController {
 
 	@Autowired
 	private IVehicleService vehicleService;
+
+	@Autowired
+	private IVehicleTypeService vehicleTypeService;
 
 	@Autowired
 	private IUserService userService;
@@ -65,8 +70,10 @@ public class ParkingSessionsController {
 	public ModelAndView createForm() {
 		ParkingSessions parkingSession = new ParkingSessions();
 		parkingSession.setStatus("PARKING");
-		parkingSession.setEntryTime(Instant.now());
-		parkingSession.setVehicleID(new Vehicle());
+		parkingSession.setEntryTime(LocalDateTime.now());
+		Vehicle vehicle = new Vehicle();
+		vehicle.setVehicleTypeID(new VehicleType());
+		parkingSession.setVehicleID(vehicle);
 		parkingSession.setSlotID(new ParkingSlot());
 
 		ModelAndView modelAndView = new ModelAndView("ParkingSessions/create");
@@ -106,7 +113,7 @@ public class ParkingSessionsController {
 
 		resolveRelationships(parkingSession);
 		if (parkingSession.getEntryTime() == null) {
-			parkingSession.setEntryTime(Instant.now());
+			parkingSession.setEntryTime(LocalDateTime.now());
 		}
 		if (parkingSession.getStatus() == null || parkingSession.getStatus().isBlank()) {
 			parkingSession.setStatus("PARKING");
@@ -132,7 +139,7 @@ public class ParkingSessionsController {
 
 	private void addFormDropdowns(ModelAndView modelAndView) {
 		modelAndView.addObject("parkingSlots", parkingSlotService.findAll());
-		modelAndView.addObject("vehicles", vehicleService.findAll());
+		modelAndView.addObject("vehicleTypes", vehicleTypeService.findAll());
 		modelAndView.addObject("users", userService.findAll());
 	}
 
@@ -141,8 +148,29 @@ public class ParkingSessionsController {
 			ParkingSlot parkingSlot = parkingSlotService.findById(parkingSession.getSlotID().getId()).orElse(null);
 			parkingSession.setSlotID(parkingSlot);
 		}
-		if (parkingSession.getVehicleID() != null && parkingSession.getVehicleID().getId() != null) {
-			Vehicle vehicle = vehicleService.findById(parkingSession.getVehicleID().getId()).orElse(null);
+		Vehicle submittedVehicle = parkingSession.getVehicleID();
+		if (submittedVehicle != null && submittedVehicle.getLicensePlate() != null
+				&& !submittedVehicle.getLicensePlate().isBlank()) {
+			String licensePlate = submittedVehicle.getLicensePlate().trim().toUpperCase();
+			submittedVehicle.setLicensePlate(licensePlate);
+			Vehicle vehicle = vehicleService.findByLicensePlate(licensePlate).orElse(null);
+			if (vehicle == null) {
+				if (submittedVehicle.getVehicleTypeID() != null
+						&& submittedVehicle.getVehicleTypeID().getTypeName() != null
+						&& !submittedVehicle.getVehicleTypeID().getTypeName().isBlank()) {
+					String typeName = submittedVehicle.getVehicleTypeID().getTypeName().trim().toUpperCase();
+					VehicleType vehicleType = vehicleTypeService.findByTypeName(typeName).orElse(null);
+					if (vehicleType == null) {
+						vehicleType = new VehicleType();
+						vehicleType.setTypeName(typeName);
+						vehicleType.setDescription(typeName + " parking vehicle");
+						vehicleTypeService.save(vehicleType);
+					}
+					submittedVehicle.setVehicleTypeID(vehicleType);
+				}
+				vehicleService.save(submittedVehicle);
+				vehicle = submittedVehicle;
+			}
 			parkingSession.setVehicleID(vehicle);
 		}
 		if (parkingSession.getCreatedBy() != null && parkingSession.getCreatedBy().getId() != null) {

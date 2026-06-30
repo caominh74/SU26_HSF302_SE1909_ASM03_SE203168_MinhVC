@@ -29,6 +29,11 @@ public class VehicleTypeServiceImpl implements IVehicleTypeService {
 	}
 
 	@Override
+	public Optional<VehicleType> findByTypeName(String typeName) {
+		return vehicleTypeRepository.findByTypeName(typeName);
+	}
+
+	@Override
 	public void save(VehicleType vehicleType) {
 		vehicleTypeRepository.save(vehicleType);
 	}

@@ -20,14 +20,28 @@
         </div>
 
         <div class="mb-3">
-            <label for="vehicleID" class="form-label">Vehicle:</label>
-            <select id="vehicleID" class="form-select" th:field="*{vehicleID.id}" required>
-                <option value="">-- Select a Vehicle --</option>
-                <option th:each="v : ${vehicles}"
-                        th:value="${v.id}"
-                        th:text="${v.licensePlate}"></option>
+            <label for="licensePlate" class="form-label">License Plate:</label>
+            <input type="text" id="licensePlate" class="form-control" th:field="*{vehicleID.licensePlate}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="vehicleTypeID" class="form-label">Vehicle Type:</label>
+            <select id="vehicleTypeID" class="form-select" th:field="*{vehicleID.vehicleTypeID.typeName}" required>
+                <option value="">-- Select a Vehicle Type --</option>
+                <option value="CAR">Car</option>
+                <option value="MOTORBIKE">Motorbike</option>
+                <option value="TRUCK">Truck</option>
             </select>
-            <div th:if="${#fields.hasErrors('vehicleID')}" th:errors="*{vehicleID}" class="text-danger mt-1"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="ownerName" class="form-label">Owner Name:</label>
+            <input type="text" id="ownerName" class="form-control" th:field="*{vehicleID.ownerName}">
+        </div>
+
+        <div class="mb-3">
+            <label for="ownerPhone" class="form-label">Owner Phone:</label>
+            <input type="text" id="ownerPhone" class="form-control" th:field="*{vehicleID.ownerPhone}">
         </div>
 
         <div class="mb-3">

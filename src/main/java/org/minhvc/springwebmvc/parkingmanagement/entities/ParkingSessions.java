@@ -7,7 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -29,10 +29,10 @@ public class ParkingSessions {
 
 	@ColumnDefault("getdate()")
 	@Column(name = "EntryTime", nullable = false)
-	private Instant entryTime;
+	private LocalDateTime entryTime;
 
 	@Column(name = "ExitTime")
-	private Instant exitTime;
+	private LocalDateTime exitTime;
 
 	@Nationalized
 	@Column(name = "EntryGate", length = 50)

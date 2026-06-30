@@ -29,6 +29,11 @@ public class VehicleServiceImpl implements IVehicleService {
 	}
 
 	@Override
+	public Optional<Vehicle> findByLicensePlate(String licensePlate) {
+		return vehicleRepository.findByLicensePlate(licensePlate);
+	}
+
+	@Override
 	public void save(Vehicle vehicle) {
 		vehicleRepository.save(vehicle);
 	}
