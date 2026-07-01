@@ -29,6 +29,19 @@ public class UserServiceImpl implements IUserService {
 	}
 
 	@Override
+	public User login(String email, String password) {
+		if (email == null || password == null) {
+			return null;
+		}
+
+		return userRepository.findByEmailIgnoreCase(email.trim())
+				.filter(user -> Boolean.TRUE.equals(user.getIsActive()))
+				.filter(user -> user.getPasswordHash() != null)
+				.filter(user -> user.getPasswordHash().equals(password))
+				.orElse(null);
+	}
+
+	@Override
 	public void save(User user) {
 		userRepository.save(user);
 	}
