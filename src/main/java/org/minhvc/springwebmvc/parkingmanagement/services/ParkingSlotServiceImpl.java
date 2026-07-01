@@ -24,6 +24,11 @@ public class ParkingSlotServiceImpl implements IParkingSlotService {
 	}
 
 	@Override
+	public List<ParkingSlot> findAvailableForParking() {
+		return parkingSlotRepository.findAvailableForParking();
+	}
+
+	@Override
 	public Optional<ParkingSlot> findById(Integer id) {
 		return parkingSlotRepository.findById(id);
 	}

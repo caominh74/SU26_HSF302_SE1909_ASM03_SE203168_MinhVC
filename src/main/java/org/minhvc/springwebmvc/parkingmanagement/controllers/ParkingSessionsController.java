@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,7 +80,7 @@ public class ParkingSessionsController {
 		parkingSession.setCustomerUser(new User());
 
 		ModelAndView modelAndView = new ModelAndView("ParkingSessions/create");
-		addFormDropdowns(modelAndView);
+		addCreateFormDropdowns(modelAndView);
 		modelAndView.addObject("parkingSession", parkingSession);
 		return modelAndView;
 	}
@@ -92,7 +93,7 @@ public class ParkingSessionsController {
 		}
 
 		ModelAndView modelAndView = new ModelAndView("ParkingSessions/update");
-		addFormDropdowns(modelAndView);
+		addUpdateFormDropdowns(modelAndView, parkingSession);
 		modelAndView.addObject("parkingSession", parkingSession);
 		return modelAndView;
 	}
@@ -109,7 +110,13 @@ public class ParkingSessionsController {
 			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			ModelAndView modelAndView = new ModelAndView("ParkingSessions/create");
-			addFormDropdowns(modelAndView);
+			addCreateFormDropdowns(modelAndView);
+			return modelAndView;
+		}
+		validateSelectedSlot(parkingSession, null, bindingResult);
+		if (bindingResult.hasErrors()) {
+			ModelAndView modelAndView = new ModelAndView("ParkingSessions/create");
+			addCreateFormDropdowns(modelAndView);
 			return modelAndView;
 		}
 
@@ -130,7 +137,16 @@ public class ParkingSessionsController {
 			BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			ModelAndView modelAndView = new ModelAndView("ParkingSessions/update");
-			addFormDropdowns(modelAndView);
+			ParkingSessions existingSession = parkingSession.getId() == null ? null
+					: parkingSessionsService.findById(parkingSession.getId()).orElse(null);
+			addUpdateFormDropdowns(modelAndView, existingSession);
+			return modelAndView;
+		}
+		ParkingSessions existingSession = parkingSessionsService.findById(parkingSession.getId()).orElse(null);
+		validateSelectedSlot(parkingSession, existingSession, bindingResult);
+		if (bindingResult.hasErrors()) {
+			ModelAndView modelAndView = new ModelAndView("ParkingSessions/update");
+			addUpdateFormDropdowns(modelAndView, existingSession);
 			return modelAndView;
 		}
 
@@ -139,12 +155,44 @@ public class ParkingSessionsController {
 		return new ModelAndView("redirect:/ParkingSessions/index");
 	}
 
-	private void addFormDropdowns(ModelAndView modelAndView) {
-		modelAndView.addObject("parkingSlots", parkingSlotService.findAll());
+	private void addCreateFormDropdowns(ModelAndView modelAndView) {
+		modelAndView.addObject("parkingSlots", parkingSlotService.findAvailableForParking());
+		addCommonFormDropdowns(modelAndView);
+	}
+
+	private void addUpdateFormDropdowns(ModelAndView modelAndView, ParkingSessions parkingSession) {
+		List<ParkingSlot> parkingSlots = new ArrayList<>(parkingSlotService.findAvailableForParking());
+		if (parkingSession != null && parkingSession.getSlotID() != null
+				&& parkingSession.getSlotID().getId() != null
+				&& parkingSlots.stream().noneMatch(slot -> slot.getId().equals(parkingSession.getSlotID().getId()))) {
+			parkingSlotService.findById(parkingSession.getSlotID().getId()).ifPresent(parkingSlots::add);
+		}
+		modelAndView.addObject("parkingSlots", parkingSlots);
+		addCommonFormDropdowns(modelAndView);
+	}
+
+	private void addCommonFormDropdowns(ModelAndView modelAndView) {
 		modelAndView.addObject("vehicleTypes", vehicleTypeService.findAll());
 		modelAndView.addObject("users", userService.findAll().stream()
 				.filter(this::isCustomerUser)
 				.collect(Collectors.toList()));
+	}
+
+	private void validateSelectedSlot(ParkingSessions parkingSession, ParkingSessions existingSession,
+			BindingResult bindingResult) {
+		Integer selectedSlotID = parkingSession.getSlotID() == null ? null : parkingSession.getSlotID().getId();
+		if (selectedSlotID == null) {
+			return;
+		}
+		Integer currentSlotID = existingSession == null || existingSession.getSlotID() == null
+				? null : existingSession.getSlotID().getId();
+		boolean currentSlotSelected = selectedSlotID.equals(currentSlotID);
+		boolean availableSlotSelected = parkingSlotService.findAvailableForParking().stream()
+				.anyMatch(slot -> selectedSlotID.equals(slot.getId()));
+		if (!currentSlotSelected && !availableSlotSelected) {
+			bindingResult.rejectValue("slotID", "parkingSession.slotUnavailable",
+					"The selected parking slot is no longer available");
+		}
 	}
 
 	private void resolveRelationships(ParkingSessions parkingSession) {
