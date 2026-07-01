@@ -10,7 +10,8 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0">Parking Sessions</h1>
         <div>
-            <span class="me-3" th:if="${session.userName}" th:text="${session.userName}"></span>
+            <span class="me-3" th:if="${session.loggedInUser}"
+                  th:text="${session.loggedInUser.fullName}"></span>
             <a th:href="@{/logout}" class="btn btn-outline-secondary">Logout</a>
         </div>
     </div>

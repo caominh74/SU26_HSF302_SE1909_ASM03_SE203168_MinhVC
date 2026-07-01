@@ -1,4 +1,4 @@
-package org.minhvc.springwebmvc.parkingmanagement;
+package org.minhvc.springwebmvc.parkingmanagement.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -9,11 +9,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
 
 	@Autowired
-	private AdminAuthInterceptor adminAuthInterceptor;
+	private AuthInterceptor authInterceptor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(adminAuthInterceptor)
-				.addPathPatterns("/", "/ParkingSessions", "/ParkingSessions/**");
+		registry.addInterceptor(authInterceptor)
+				.addPathPatterns("/**")
+				.excludePathPatterns(
+						"/login",
+						"/logout",
+						"/css/**",
+						"/js/**",
+						"/images/**",
+						"/bootstrap-4.5.3-dist/**");
 	}
 }

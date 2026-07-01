@@ -13,15 +13,13 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class AuthController {
 
-	private static final String ADMIN_ROLE = "ADMIN";
-
 	@Autowired
 	private IUserService userService;
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public ModelAndView loginPage(HttpSession session) {
-		if (ADMIN_ROLE.equalsIgnoreCase((String) session.getAttribute("userRole"))) {
-			return new ModelAndView("redirect:/ParkingSessions/index");
+		if (session.getAttribute("loggedInUser") != null) {
+			return new ModelAndView("redirect:/");
 		}
 		return new ModelAndView("login");
 	}
@@ -35,15 +33,9 @@ public class AuthController {
 		if (user == null) {
 			return loginWithError("Invalid email or password", email);
 		}
-		if (user.getRoleID() == null || user.getRoleID().getRoleName() == null
-				|| !ADMIN_ROLE.equalsIgnoreCase(user.getRoleID().getRoleName())) {
-			return loginWithError("Admin access is required", email);
-		}
 
-		session.setAttribute("userId", user.getId());
-		session.setAttribute("userName", user.getFullName());
-		session.setAttribute("userRole", ADMIN_ROLE);
-		return new ModelAndView("redirect:/ParkingSessions/index");
+		session.setAttribute("loggedInUser", user);
+		return new ModelAndView("redirect:/");
 	}
 
 	@RequestMapping(value = "/logout", method = RequestMethod.GET)
